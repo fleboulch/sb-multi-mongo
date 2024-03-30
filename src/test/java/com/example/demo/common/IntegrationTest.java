@@ -16,5 +16,10 @@ import java.lang.annotation.*;
 @Import(Containers.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+//@EnableAutoConfiguration(exclude={
+//        MongoAutoConfiguration.class,
+//        MongoRepositoriesAutoConfiguration.class,
+//        MongoDataAutoConfiguration.class
+//})
 public @interface IntegrationTest {
 }
