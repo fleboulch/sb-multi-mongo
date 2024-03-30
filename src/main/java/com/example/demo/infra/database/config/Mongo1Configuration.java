@@ -42,12 +42,8 @@ public class Mongo1Configuration {
 
     @Primary
     @Bean(name = "primaryMongoClient")
-    public MongoClient primaryMongoClient(
-//            MongoCustomeProperties mongoProperties,
-            @Qualifier("primaryMongoProperties") MongoProperties mongoProperties
-    ) {
-
-        ServerAddress serverAddress = new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort());
+    public MongoClient primaryMongoClient() {
+        ServerAddress serverAddress = new ServerAddress(primaryMongoProperties().getHost(), primaryMongoProperties().getPort());
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
                         builder.hosts(List.of(serverAddress)))
@@ -61,20 +57,15 @@ public class Mongo1Configuration {
 
     @Primary
     @Bean(name = "primaryMongoFactory")
-    public MongoDatabaseFactory mongoDatabaseFactory(
-            @Qualifier("primaryMongoClient") MongoClient mongoClient,
-//            MongoCustomeProperties mongoProperties
-            @Qualifier("primaryMongoProperties") MongoProperties mongoProperties
-    ) {
-        return new SimpleMongoClientDatabaseFactory(mongoClient, mongoProperties.getDatabase());
+    public MongoDatabaseFactory mongoDatabaseFactory() {
+        return new SimpleMongoClientDatabaseFactory(primaryMongoClient(), primaryMongoProperties().getDatabase());
     }
 
     @Primary
     @Bean(name = "primaryMongoTemplate")
-    public MongoTemplate mongoTemplate(
-            @Qualifier("primaryMongoFactory") MongoDatabaseFactory mongoDatabaseFactory) {
+    public MongoTemplate mongoTemplate() {
         //        return new MongoTemplate(mongoDatabaseFactory);
-        MongoTemplate template = new MongoTemplate(mongoDatabaseFactory);
+        MongoTemplate template = new MongoTemplate(mongoDatabaseFactory());
         MappingMongoConverter mmc = (MappingMongoConverter)template.getConverter();
         mmc.setCustomConversions( new MongoCustomConversions(asList(
                 new Converters.BinaryToUuidConverter(),
@@ -83,6 +74,5 @@ public class Mongo1Configuration {
         mmc.afterPropertiesSet();
         return template;
     }
-
 
 }

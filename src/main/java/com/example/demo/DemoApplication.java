@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 
 @SpringBootApplication(exclude = {
 		MongoAutoConfiguration.class,
-//		MongoRepositoriesAutoConfiguration.class,
+		MongoRepositoriesAutoConfiguration.class,
 		MongoDataAutoConfiguration.class
 })
 public class DemoApplication {

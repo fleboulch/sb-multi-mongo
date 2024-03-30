@@ -36,10 +36,9 @@ public class Mongo2Configuration {
     }
 
     @Bean(name = "secondaryMongoClient")
-    public MongoClient secondaryMongoClient(
-            @Qualifier("secondaryMongoProperties") MongoProperties mongoProperties) {
+    public MongoClient secondaryMongoClient() {
 
-        ServerAddress serverAddress = new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort());
+        ServerAddress serverAddress = new ServerAddress(secondaryMongoProperties().getHost(), secondaryMongoProperties().getPort());
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyToClusterSettings(builder -> builder.hosts(List.of(serverAddress)))
 //                .credential(MongoCredential.createCredential(
@@ -51,17 +50,14 @@ public class Mongo2Configuration {
     }
 
     @Bean(name = "secondaryMongoFactory")
-    public MongoDatabaseFactory mongoDatabaseFactory(
-            @Qualifier("secondaryMongoClient") MongoClient mongoClient,
-            @Qualifier("secondaryMongoProperties") MongoProperties mongoProperties) {
-        return new SimpleMongoClientDatabaseFactory(mongoClient, mongoProperties.getDatabase());
+    public MongoDatabaseFactory mongoDatabaseFactory() {
+        return new SimpleMongoClientDatabaseFactory(secondaryMongoClient(), secondaryMongoProperties().getDatabase());
     }
 
     @Bean(name = "secondaryMongoTemplate")
-    public MongoTemplate mongoTemplate(
-            @Qualifier("secondaryMongoFactory") MongoDatabaseFactory mongoDatabaseFactory) {
+    public MongoTemplate mongoTemplate() {
 //        return new MongoTemplate(mongoDatabaseFactory);
-        MongoTemplate template = new MongoTemplate(mongoDatabaseFactory);
+        MongoTemplate template = new MongoTemplate(mongoDatabaseFactory());
         MappingMongoConverter mmc = (MappingMongoConverter)template.getConverter();
         mmc.setCustomConversions( new MongoCustomConversions(asList(
                 new Converters.BinaryToUuidConverter(),
