@@ -5,6 +5,7 @@ import com.example.demo.infra.database.room.RoomMongo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +23,7 @@ public class GetRoomsUseCase {
     private MockMvc mockMvc;
 
     @Autowired
+    @Qualifier("secondaryMongoTemplate")
     private MongoTemplate mongoTemplate;
 
     @BeforeEach
