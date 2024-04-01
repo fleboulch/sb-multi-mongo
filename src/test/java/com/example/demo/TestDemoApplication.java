@@ -1,24 +1,14 @@
 package com.example.demo;
 
+import com.example.demo.containers.Containers;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.context.annotation.Bean;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.utility.DockerImageName;
 
-@TestConfiguration(proxyBeanMethods = false)
 public class TestDemoApplication {
 
-	@Bean
-	@ServiceConnection
-	MongoDBContainer mongoDbContainer() {
-		return new MongoDBContainer(DockerImageName.parse("mongo:latest"))
-				.withReuse(true);
-	}
-
 	public static void main(String[] args) {
-		SpringApplication.from(DemoApplication::main).with(TestDemoApplication.class).run(args);
+		SpringApplication.from(DemoApplication::main)
+				.with(Containers.class)
+				.run(args);
 	}
 
 }
